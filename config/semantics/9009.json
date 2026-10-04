@@ -10,6 +10,78 @@
       "label": "Batch"
     },
     {
+      "kind": "entity_type",
+      "value": "ITEM",
+      "hash": "0xd74416be5a0f22763f73a0a923d9377b0b124062ba89b1de75e6f905f7cb0836",
+      "label": "Item"
+    },
+    {
+      "kind": "event_type",
+      "value": "BATCH_CONTAINS_ITEM",
+      "hash": "0xc30cecb4c51e0baf220d05515ad5b0b8e5049f5bd35d377374e6a173b543dda0",
+      "label": "Batch Contains Item"
+    },
+    {
+      "kind": "event_type",
+      "value": "BATCH_PACKED",
+      "hash": "0xa6c54291c53e4b705b55452ba566a281e3acd346d01626571d4c7b57fc47234c",
+      "label": "Batch Packed"
+    },
+    {
+      "kind": "event_type",
+      "value": "BATCH_REGISTERED",
+      "hash": "0xf1df3e3dfc32d781bb8e7bccc85b9b28bb332a26a5fb4be9523d55651b71fb4f",
+      "label": "Batch Registered"
+    },
+    {
+      "kind": "event_type",
+      "value": "CUSTODY_TRANSFER_ACCEPTED",
+      "hash": "0x156f6a165352cf67cc8ebf8a74cf58b8dbc65e08dfdffb51bcfd3cc3bde1882e",
+      "label": "Custody Transfer Accepted"
+    },
+    {
+      "kind": "event_type",
+      "value": "CUSTODY_TRANSFER_PROPOSED",
+      "hash": "0x18abdf6d7f077cf392fc5218ce1cdd22017ca21480a9828a6fa2d8f086bb480b",
+      "label": "Custody Transfer Proposed"
+    },
+    {
+      "kind": "event_type",
+      "value": "ENTITY_LINK_DISABLED",
+      "hash": "0x2ac97c8f9dbd65406f6acbb5f8c85f4aed4a0a0055b4a484e14604484020de90",
+      "label": "Entity Link Disabled"
+    },
+    {
+      "kind": "event_type",
+      "value": "ENTITY_LINK_ENABLED",
+      "hash": "0xb559605de1b231ac76146ec73c7f92e3ff01985bbe83167816402a52a512bb79",
+      "label": "Entity Link Enabled"
+    },
+    {
+      "kind": "event_type",
+      "value": "ENTITY_METADATA_REVISED",
+      "hash": "0xe742ee83f1f43642124f5b84a0e57f7c68933241c270792dd22a080c5e61463e",
+      "label": "Entity Metadata Revised"
+    },
+    {
+      "kind": "event_type",
+      "value": "ITEM_CLOSED",
+      "hash": "0xc9fcf803d594828bb1179c6afe1670b98b444f1fdd4d84ca3c38491117242c30",
+      "label": "Item Closed"
+    },
+    {
+      "kind": "event_type",
+      "value": "QUALITY_CHECK_PASSED",
+      "hash": "0xa16eb95fd86356b7de1186577e69e741f70f0cdc95302a86c3aca4591d45c816",
+      "label": "Quality Check Passed"
+    },
+    {
+      "kind": "link_type",
+      "value": "CONTAINS",
+      "hash": "0xb546ddebf2cc54c215beee5b56c25b19cd4e03d9ef5628d869b5a8528fc95d01",
+      "label": "Contains"
+    },
+    {
       "kind": "state",
       "value": "CREATED",
       "hash": "0x09ddea8cc7bb8763f501e1101b83d1f724d14016aa7cdef5f09ab85743ee0fad",
@@ -20,12 +92,6 @@
       "value": "PACKED",
       "hash": "0xf88c6ab7a280e131d28760ae11d8d1b190884b6be85e6222a4d6a37486326540",
       "label": "Packed"
-    },
-    {
-      "kind": "link_type",
-      "value": "CONTAINS",
-      "hash": "0xb546ddebf2cc54c215beee5b56c25b19cd4e03d9ef5628d869b5a8528fc95d01",
-      "label": "Contains"
     }
   ]
 }
