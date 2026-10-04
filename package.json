@@ -8,7 +8,10 @@
     "check": "tsx src/check.ts",
     "migrate": "tsx src/migrate.ts",
     "backfill": "tsx src/backfill.ts",
-    "status": "tsx src/status.ts"
+    "status": "tsx src/status.ts",
+    "project": "tsx src/project.ts",
+    "project:rebuild": "tsx src/project.ts --rebuild",
+    "read-model:status": "tsx src/read-model-status.ts"
   },
   "keywords": [],
   "author": "",
