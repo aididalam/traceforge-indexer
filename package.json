@@ -11,7 +11,8 @@
     "status": "tsx src/status.ts",
     "project": "tsx src/project.ts",
     "project:rebuild": "tsx src/project.ts --rebuild",
-    "read-model:status": "tsx src/read-model-status.ts"
+    "read-model:status": "tsx src/read-model-status.ts",
+    "history": "tsx src/entity-history.ts"
   },
   "keywords": [],
   "author": "",
