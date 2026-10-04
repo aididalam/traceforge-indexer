@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "check": "tsx src/check.ts"
+    "check": "tsx src/check.ts",
+    "migrate": "tsx src/migrate.ts",
+    "backfill": "tsx src/backfill.ts",
+    "status": "tsx src/status.ts"
   },
   "keywords": [],
   "author": "",
