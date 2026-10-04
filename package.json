@@ -12,7 +12,9 @@
     "project": "tsx src/project.ts",
     "project:rebuild": "tsx src/project.ts --rebuild",
     "read-model:status": "tsx src/read-model-status.ts",
-    "history": "tsx src/entity-history.ts"
+    "history": "tsx src/entity-history.ts",
+    "documents:import": "tsx src/import-documents.ts",
+    "documents:status": "tsx src/document-status.ts"
   },
   "keywords": [],
   "author": "",

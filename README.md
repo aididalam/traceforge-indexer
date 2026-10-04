@@ -56,3 +56,21 @@ rebuilt without changing blockchain state.
 `.env` is local-only and ignored by Git.
 
 Never commit private keys or production database credentials.
+
+## Off-chain document registry
+
+TraceForge stores hashes on-chain while full JSON metadata and evidence remain
+off-chain.
+
+The indexer can import JSON documents and verifies their content identity by
+computing `keccak256` over the exact file bytes, matching the contract bootstrap
+hashing model.
+
+```bash
+npm run migrate
+npm run documents:import -- ../contracts/bootstrap
+npm run documents:status
+```
+
+The registry is keyed by content hash, so current and historical read-model rows
+can resolve full JSON documents without putting private business data on-chain.
