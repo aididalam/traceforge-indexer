@@ -14,7 +14,9 @@
     "read-model:status": "tsx src/read-model-status.ts",
     "history": "tsx src/entity-history.ts",
     "documents:import": "tsx src/import-documents.ts",
-    "documents:status": "tsx src/document-status.ts"
+    "documents:status": "tsx src/document-status.ts",
+    "semantics:import": "tsx src/import-semantics.ts config/semantics/9009.json",
+    "semantics:status": "tsx src/semantic-status.ts"
   },
   "keywords": [],
   "author": "",

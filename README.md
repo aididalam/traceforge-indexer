@@ -74,3 +74,21 @@ npm run documents:status
 
 The registry is keyed by content hash, so current and historical read-model rows
 can resolve full JSON documents without putting private business data on-chain.
+
+## Semantic registry
+
+TraceForge keeps business semantics dynamic while security invariants remain
+fixed. Dynamic values such as entity types, states, event types, and link types
+are bytes32 hashes on-chain.
+
+The semantic registry maps verified string values to those hashes for human
+readability without changing blockchain state.
+
+```bash
+npm run migrate
+npm run semantics:import
+npm run semantics:status
+```
+
+Semantic imports verify every configured value by recomputing
+`keccak256(stringToHex(value))` and refusing mismatches.

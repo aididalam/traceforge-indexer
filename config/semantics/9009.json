@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "chainId": 9009,
+  "contractAddress": "0x07bf849fb7e97fa174791bdf3bf9bffa621e145b",
+  "semantics": [
+    {
+      "kind": "entity_type",
+      "value": "BATCH",
+      "hash": "0xa7a318e10600421edf76d4178817bf2a41f7a09102c28792770d5bcd819767ff",
+      "label": "Batch"
+    },
+    {
+      "kind": "state",
+      "value": "CREATED",
+      "hash": "0x09ddea8cc7bb8763f501e1101b83d1f724d14016aa7cdef5f09ab85743ee0fad",
+      "label": "Created"
+    },
+    {
+      "kind": "state",
+      "value": "PACKED",
+      "hash": "0xf88c6ab7a280e131d28760ae11d8d1b190884b6be85e6222a4d6a37486326540",
+      "label": "Packed"
+    },
+    {
+      "kind": "link_type",
+      "value": "CONTAINS",
+      "hash": "0xb546ddebf2cc54c215beee5b56c25b19cd4e03d9ef5628d869b5a8528fc95d01",
+      "label": "Contains"
+    }
+  ]
+}
