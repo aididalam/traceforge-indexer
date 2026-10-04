@@ -1,0 +1,24 @@
+{
+  "name": "@traceforge/indexer",
+  "version": "0.1.0",
+  "description": "TraceForge blockchain event indexer and MySQL read model",
+  "main": "index.js",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check": "tsx src/check.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "mysql2": "^3.24.5",
+    "viem": "^2.57.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "type": "module"
+}
