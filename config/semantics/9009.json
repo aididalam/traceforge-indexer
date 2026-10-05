@@ -29,6 +29,12 @@
     },
     {
       "kind": "event_type",
+      "value": "GENERIC_API_RECORD_TRACE_PROOF",
+      "hash": "0x5466c899b01e0298e3f0e0051d0b040414dceb4954ebc76c5397285699beffa7",
+      "label": "Generic API Record Trace Proof"
+    },
+    {
+      "kind": "event_type",
       "value": "BATCH_QUALITY_APPROVED",
       "hash": "0x6608281bf38a2d7fa826bae96cf0476b266e16cfe7fde962cd3e7dc631bd7213",
       "label": "Batch Quality Approved"
