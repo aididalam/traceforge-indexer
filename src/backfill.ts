@@ -184,7 +184,7 @@ try {
       "Indexer is already caught up.",
     );
 
-    process.exit(0);
+    // Fall through so the outer finally block closes the DB cleanly.
   }
 
   let totalEvents =
