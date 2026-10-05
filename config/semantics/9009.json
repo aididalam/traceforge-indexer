@@ -29,6 +29,12 @@
     },
     {
       "kind": "event_type",
+      "value": "BATCH_QUALITY_APPROVED",
+      "hash": "0x6608281bf38a2d7fa826bae96cf0476b266e16cfe7fde962cd3e7dc631bd7213",
+      "label": "Batch Quality Approved"
+    },
+    {
+      "kind": "event_type",
       "value": "BATCH_REGISTERED",
       "hash": "0xf1df3e3dfc32d781bb8e7bccc85b9b28bb332a26a5fb4be9523d55651b71fb4f",
       "label": "Batch Registered"
@@ -92,6 +98,12 @@
       "value": "PACKED",
       "hash": "0xf88c6ab7a280e131d28760ae11d8d1b190884b6be85e6222a4d6a37486326540",
       "label": "Packed"
+    },
+    {
+      "kind": "state",
+      "value": "QUALITY_APPROVED",
+      "hash": "0x721ef95cafe81285f508ebe341a9f20739d4769509e01be75baa00b05e77b3ae",
+      "label": "Quality Approved"
     }
   ]
 }

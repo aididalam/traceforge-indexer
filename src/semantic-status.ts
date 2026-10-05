@@ -48,7 +48,7 @@ try {
     >(
       `
         SELECT
-          semantic_kind,
+          observed.semantic_kind AS semantic_kind,
           COUNT(*) AS observed,
           SUM(
             CASE
@@ -102,10 +102,10 @@ try {
              observed.semantic_hash
 
         GROUP BY
-          semantic_kind
+          observed.semantic_kind
 
         ORDER BY
-          semantic_kind
+          observed.semantic_kind
       `,
       scope,
     );
