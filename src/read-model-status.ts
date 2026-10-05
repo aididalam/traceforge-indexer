@@ -19,7 +19,7 @@ try {
     "organization_roles",
     "entities",
     "trace_events",
-    "custody_transfers",
+    "custody_claims",
     "entity_links",
     "entity_link_events",
   ];
@@ -61,20 +61,9 @@ try {
   console.log("Entities");
   console.table(entities);
 
-  const [custody] = await db.query(
-    `SELECT
-       entity_id,
-       from_organization_id,
-       to_organization_id,
-       status,
-       proposed_at,
-       terminal_at
-     FROM custody_transfers
-     ORDER BY proposal_event_id`,
-  );
-
-  console.log();
-  console.log("Custody transfers");
+  const [custody] = await db.query(`SELECT tenant_id,entity_id,from_organization_id,to_organization_id,
+    custody_version,received_at FROM custody_claims ORDER BY chain_event_id`);
+  console.log("Physical receipts");
   console.table(custody);
 
   const [links] = await db.query(

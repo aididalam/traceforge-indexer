@@ -232,61 +232,18 @@ async function apply(row: EventRow) {
       );
       return;
 
-    case "CustodyTransferProposed":
-      await q(
-        `INSERT INTO custody_transfers
-         (proposal_event_id, tenant_id, entity_id, from_organization_id, to_organization_id,
-          proposal_role_id, proposal_actor, proposal_event_type, proposal_evidence_hash,
-          proposed_at, status)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')`,
-        [id, str(a,"tenantId"), str(a,"entityId"), str(a,"fromOrganizationId"),
-         str(a,"toOrganizationId"), str(a,"roleId"), str(a,"actor"), str(a,"eventType"),
-         str(a,"evidenceHash"), uint(a,"proposedAt")],
-      );
+    case "CustodyClaimed":
+      await q(`INSERT INTO custody_claims
+        (chain_event_id,tenant_id,entity_id,from_organization_id,to_organization_id,
+         actor,event_type,evidence_hash,custody_version,received_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?)`,
+        [id,str(a,"tenantId"),str(a,"entityId"),str(a,"fromOrganizationId"),str(a,"toOrganizationId"),
+         str(a,"actor"),str(a,"eventType"),str(a,"evidenceHash"),uint(a,"custodyVersion"),uint(a,"timestamp")]);
+      await mustUpdate(`UPDATE entities SET current_custodian=?,custody_version=?,updated_event_id=?
+        WHERE tenant_id=? AND entity_id=? AND current_custodian=? AND custody_version=? AND closed=FALSE`,
+        [str(a,"toOrganizationId"),uint(a,"custodyVersion"),id,str(a,"tenantId"),str(a,"entityId"),
+         str(a,"fromOrganizationId"),(BigInt(uint(a,"custodyVersion"))-1n).toString()],"CustodyClaimed ordered update");
       return;
-
-    case "CustodyTransferred":
-      await mustUpdate(
-        `UPDATE custody_transfers
-         SET status = 'ACCEPTED', terminal_event_id = ?, terminal_role_id = ?,
-             terminal_actor = ?, terminal_event_type = ?, terminal_evidence_hash = ?, terminal_at = ?
-         WHERE tenant_id = ? AND entity_id = ? AND from_organization_id = ?
-           AND to_organization_id = ? AND status = 'PENDING'
-         ORDER BY proposal_event_id DESC LIMIT 1`,
-        [id, str(a,"roleId"), str(a,"actor"), str(a,"eventType"), str(a,"evidenceHash"),
-         uint(a,"acceptedAt"), str(a,"tenantId"), str(a,"entityId"),
-         str(a,"fromOrganizationId"), str(a,"toOrganizationId")],
-        row.event_name,
-      );
-      await mustUpdate(
-        `UPDATE entities SET current_custodian = ?, updated_event_id = ?
-         WHERE tenant_id = ? AND entity_id = ?`,
-        [str(a,"toOrganizationId"), id, str(a,"tenantId"), str(a,"entityId")],
-        "CustodyTransferred entity update",
-      );
-      return;
-
-    case "CustodyTransferCancelled":
-    case "CustodyTransferCancelledByAdmin": {
-      const actor = row.event_name === "CustodyTransferCancelled"
-        ? str(a,"actor")
-        : str(a,"admin");
-      const role = row.event_name === "CustodyTransferCancelled"
-        ? str(a,"roleId")
-        : null;
-      await mustUpdate(
-        `UPDATE custody_transfers
-         SET status = 'CANCELLED', terminal_event_id = ?, terminal_role_id = ?,
-             terminal_actor = ?, terminal_event_type = ?, terminal_evidence_hash = ?, terminal_at = ?
-         WHERE tenant_id = ? AND entity_id = ? AND from_organization_id = ?
-           AND to_organization_id = ? AND status = 'PENDING'
-         ORDER BY proposal_event_id DESC LIMIT 1`,
-        [id, role, actor, str(a,"eventType"), str(a,"evidenceHash"), uint(a,"cancelledAt"),
-         str(a,"tenantId"), str(a,"entityId"), str(a,"fromOrganizationId"), str(a,"toOrganizationId")],
-        row.event_name,
-      );
-      return;
-    }
 
     case "EntityLinkCreated":
       await q(
@@ -334,7 +291,7 @@ async function apply(row: EventRow) {
 
     case "EntityClosed":
       await mustUpdate(
-        `UPDATE entities SET closed = TRUE, closed_at = ?, updated_event_id = ?
+        `UPDATE entities SET closed = TRUE, closed_at = ?, custody_version=custody_version+1, updated_event_id = ?
          WHERE tenant_id = ? AND entity_id = ?`,
         [uint(a,"closedAt"), id, str(a,"tenantId"), str(a,"entityId")],
         row.event_name,
@@ -353,7 +310,7 @@ async function apply(row: EventRow) {
 const derivedTables = [
   "entity_link_events",
   "entity_links",
-  "custody_transfers",
+  "custody_claims",
   "trace_events",
   "entities",
   "organization_roles",

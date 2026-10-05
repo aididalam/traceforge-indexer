@@ -350,76 +350,9 @@ try {
         );
         break;
 
-      case "CustodyTransferProposed":
-        console.log(
-          `  transfer:   ${value(args, "fromOrganizationId")} -> ${value(args, "toOrganizationId")}`,
-        );
-        console.log(
-          `  event type: ${value(args, "eventType")}`,
-        );
-        console.log(
-          `  evidence:   ${value(args, "evidenceHash")}`,
-        );
-        console.log(
-          `  actor:      ${value(args, "actor")}`,
-        );
-        console.log(
-          `  timestamp:  ${value(args, "proposedAt")}`,
-        );
-        break;
-
-      case "CustodyTransferred":
-        console.log(
-          `  transfer:   ${value(args, "fromOrganizationId")} -> ${value(args, "toOrganizationId")}`,
-        );
-        console.log(
-          `  event type: ${value(args, "eventType")}`,
-        );
-        console.log(
-          `  evidence:   ${value(args, "evidenceHash")}`,
-        );
-        console.log(
-          `  actor:      ${value(args, "actor")}`,
-        );
-        console.log(
-          `  timestamp:  ${value(args, "acceptedAt")}`,
-        );
-        break;
-
-      case "CustodyTransferCancelled":
-        console.log(
-          `  transfer:   ${value(args, "fromOrganizationId")} -> ${value(args, "toOrganizationId")}`,
-        );
-        console.log(
-          `  event type: ${value(args, "eventType")}`,
-        );
-        console.log(
-          `  evidence:   ${value(args, "evidenceHash")}`,
-        );
-        console.log(
-          `  actor:      ${value(args, "actor")}`,
-        );
-        console.log(
-          `  timestamp:  ${value(args, "cancelledAt")}`,
-        );
-        break;
-
-      case "CustodyTransferCancelledByAdmin":
-        console.log(
-          `  transfer:   ${value(args, "fromOrganizationId")} -> ${value(args, "toOrganizationId")}`,
-        );
-        console.log(
-          `  event type: ${value(args, "eventType")}`,
-        );
-        console.log(
-          `  evidence:   ${value(args, "evidenceHash")}`,
-        );
-        console.log(
-          `  admin:      ${value(args, "admin")}`,
-        );
-        console.log(
-          `  timestamp:  ${value(args, "cancelledAt")}`,
-        );
+      case "CustodyClaimed":
+        console.log("  Physical receipt", { from: args.fromOrganizationId, to: args.toOrganizationId,
+          actor: args.actor, evidence: args.evidenceHash, version: args.custodyVersion, timestamp: args.timestamp });
         break;
 
       case "EntityLinkCreated":

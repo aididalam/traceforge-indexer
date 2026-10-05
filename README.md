@@ -69,12 +69,12 @@ TraceForge stores hashes on-chain while full JSON metadata and evidence remain
 off-chain.
 
 The indexer can import JSON documents and verifies their content identity by
-computing `keccak256` over the exact file bytes, matching the contract bootstrap
+computing `keccak256` over the exact file bytes, matching the originating document bytes
 hashing model.
 
 ```bash
 npm run migrate
-npm run documents:import -- ../contracts/bootstrap
+npm run documents:import -- /path/to/approved/documents
 npm run documents:status
 ```
 
@@ -98,3 +98,9 @@ npm run semantics:status
 
 Semantic imports verify every configured value by recomputing
 `keccak256(stringToHex(value))` and refusing mismatches.
+
+## Direct receipt protocol
+
+`CustodyClaimed` appends an immutable `custody_claims` row and updates the product holder/version in event order. There is no pending transfer projection. Closed products remain in the read model. Independent business registration emits the existing identity/workspace events.
+
+For isolated tests or an explicit deployment configuration, `TRACEFORGE_CHAIN_ID`, `TRACEFORGE_CONTRACT_ADDRESS` and `TRACEFORGE_DEPLOYMENT_BLOCK` override the checked-in network defaults. Run `npm run public:sync` in the API after projecting to refresh explicitly opted-in public names/details.

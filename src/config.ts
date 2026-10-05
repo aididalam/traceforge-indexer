@@ -42,15 +42,15 @@ export const config = {
 
   chainId:
     Number(
-      network.chainId,
+      process.env.TRACEFORGE_CHAIN_ID ?? network.chainId,
     ),
 
   contractAddress:
-    network.contractAddress as Address,
+    (process.env.TRACEFORGE_CONTRACT_ADDRESS ?? network.contractAddress) as Address,
 
   deploymentBlock:
     BigInt(
-      network.deploymentBlock,
+      process.env.TRACEFORGE_DEPLOYMENT_BLOCK ?? network.deploymentBlock,
     ),
 
   mysql: {

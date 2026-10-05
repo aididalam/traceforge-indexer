@@ -17,71 +17,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "CustodyChangedSinceProposal",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "CustodyTransferAlreadyPending",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "CustodyTransferNotFound",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      }
-    ],
     "name": "EntityAlreadyExists",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "EntityHasPendingCustodyTransfer",
     "type": "error"
   },
   {
@@ -331,32 +267,6 @@
         "type": "bytes32"
       },
       {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "expectedOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "callerOrganizationId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "NotCustodyRecipient",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
         "internalType": "address",
         "name": "account",
         "type": "address"
@@ -532,6 +442,32 @@
         "internalType": "bytes32",
         "name": "tenantId",
         "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "entityId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint64",
+        "name": "expectedVersion",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint64",
+        "name": "actualVersion",
+        "type": "uint64"
+      }
+    ],
+    "name": "StaleCustody",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tenantId",
+        "type": "bytes32"
       }
     ],
     "name": "TenantAlreadyExists",
@@ -663,12 +599,6 @@
       },
       {
         "indexed": false,
-        "internalType": "bytes32",
-        "name": "roleId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
         "name": "actor",
         "type": "address"
@@ -688,188 +618,17 @@
       {
         "indexed": false,
         "internalType": "uint64",
-        "name": "cancelledAt",
+        "name": "custodyVersion",
         "type": "uint64"
-      }
-    ],
-    "name": "CustodyTransferCancelled",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "fromOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "toOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "admin",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "eventType",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "evidenceHash",
-        "type": "bytes32"
       },
       {
         "indexed": false,
         "internalType": "uint64",
-        "name": "cancelledAt",
+        "name": "timestamp",
         "type": "uint64"
       }
     ],
-    "name": "CustodyTransferCancelledByAdmin",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "fromOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "toOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "roleId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "actor",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "eventType",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "evidenceHash",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint64",
-        "name": "proposedAt",
-        "type": "uint64"
-      }
-    ],
-    "name": "CustodyTransferProposed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "fromOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "toOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "roleId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "actor",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "eventType",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "evidenceHash",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint64",
-        "name": "acceptedAt",
-        "type": "uint64"
-      }
-    ],
-    "name": "CustodyTransferred",
+    "name": "CustodyClaimed",
     "type": "event"
   },
   {
@@ -1602,39 +1361,6 @@
     "type": "event"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "roleId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "eventType",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "evidenceHash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "acceptCustodyTransfer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "acceptOwnership",
     "outputs": [],
@@ -1709,13 +1435,13 @@
       },
       {
         "internalType": "bytes32",
-        "name": "roleId",
+        "name": "entityId",
         "type": "bytes32"
       },
       {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
+        "internalType": "uint64",
+        "name": "expectedVersion",
+        "type": "uint64"
       },
       {
         "internalType": "bytes32",
@@ -1728,35 +1454,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "cancelCustodyTransfer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "eventType",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "evidenceHash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "cancelCustodyTransferAsTenantAdmin",
+    "name": "claimCustody",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1826,6 +1524,29 @@
       }
     ],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tenantId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "metadataHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "roleId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "createBusinessWorkspace",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -2014,6 +1735,30 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "tenantId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "entityId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getCustodyVersion",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
       }
     ],
     "stateMutability": "view",
@@ -2252,57 +1997,6 @@
       },
       {
         "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getPendingCustodyTransfer",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "bytes32",
-            "name": "fromOrganizationId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "toOrganizationId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "proposedBy",
-            "type": "address"
-          },
-          {
-            "internalType": "uint64",
-            "name": "proposedAt",
-            "type": "uint64"
-          },
-          {
-            "internalType": "bool",
-            "name": "exists",
-            "type": "bool"
-          }
-        ],
-        "internalType": "struct TraceForge.CustodyTransfer",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
         "name": "roleId",
         "type": "bytes32"
       }
@@ -2501,30 +2195,6 @@
       },
       {
         "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "hasPendingCustodyTransfer",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
         "name": "organizationId",
         "type": "bytes32"
       }
@@ -2633,44 +2303,6 @@
       },
       {
         "internalType": "bytes32",
-        "name": "toOrganizationId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "eventType",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "evidenceHash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "proposeCustodyTransfer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "tenantId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "roleId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "entityId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
         "name": "eventType",
         "type": "bytes32"
       },
@@ -2681,6 +2313,24 @@
       }
     ],
     "name": "recordTrace",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "organizationId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "metadataHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "registerBusiness",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
