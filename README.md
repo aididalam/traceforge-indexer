@@ -2,6 +2,12 @@
 
 Open-source blockchain event indexer and MySQL read model for TraceForge.
 
+## Parent project
+
+This repository is the `indexer/` submodule of
+[TraceForge](https://github.com/aididalam/traceforge).
+See the parent repository for all components, architecture and setup.
+
 ## Current development network
 
 - Chain ID: `9009`
