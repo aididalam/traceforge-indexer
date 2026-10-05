@@ -19,12 +19,14 @@
     "semantics:status": "tsx src/semantic-status.ts",
     "semantics:discover": "tsx src/discover-semantics.ts",
     "build": "tsc",
-    "verify:production-build": "npm run build && node --check dist/check.js && node --check dist/backfill.js && node --check dist/project.js",
+    "verify:production-build": "npm run build && node --check dist/check.js && node --check dist/backfill.js && node --check dist/project.js && node --check dist/monitor.js",
     "check:prod": "node dist/check.js",
     "backfill:prod": "node dist/backfill.js",
     "project:prod": "node dist/project.js",
     "sync:prod": "npm run check:prod && npm run backfill:prod && npm run project:prod",
-    "verify:deployment-readiness": "npm run typecheck && npm run verify:production-build && npm run check:prod && npm run backfill:prod && npm run project:prod"
+    "verify:deployment-readiness": "npm run typecheck && npm run verify:production-build && npm run check:prod && npm run backfill:prod && npm run project:prod && npm run monitor:prod",
+    "monitor": "tsx src/monitor.ts",
+    "monitor:prod": "node dist/monitor.js"
   },
   "keywords": [],
   "author": "",
