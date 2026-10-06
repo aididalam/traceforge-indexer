@@ -104,11 +104,11 @@ Semantic imports verify every configured value by recomputing
 `CustodyClaimed` appends an immutable `custody_claims` row and updates the product holder/version in event order. There is no pending transfer projection. Closed products remain in the read model. Independent business registration emits the existing identity/workspace events.
 
 The checked-in ABI also includes `ProductRegistered`, `BatchReceived` and
-`QuantityRemoved` from the 2026-10-06 quantity contract implementation. Their typed
-projections/migrations are the next phase of the
+`QuantityRemoved` from the activated 2026-10-06 quantity contract. Their typed
+projections/migrations implement the
 [batch upgrade](https://github.com/aididalam/traceforge/blob/main/docs/batch-quantity-plan.md).
-The running deployment continues emitting the existing events; deploy the
-quantity contract only after matching projections and API workflows are ready.
+The checked-in network configuration points to the active quantity contract,
+`0xf286a8f7bbbe4e5f2337e1701524368794de5672`, from block 27861 on chain 9009.
 
 For isolated tests or an explicit deployment configuration, `TRACEFORGE_CHAIN_ID`, `TRACEFORGE_CONTRACT_ADDRESS` and `TRACEFORGE_DEPLOYMENT_BLOCK` override the checked-in network defaults. Run `npm run public:sync` in the API after projecting to refresh explicitly opted-in public names/details.
 
@@ -133,7 +133,9 @@ database, so the projector refuses mixed-deployment raw logs. Use a separate
 read-model database for each deployment. An existing `read-model-v1` database
 requires `npm run project:rebuild` after migration; incremental replay refuses
 to silently reuse the old checkpoint. API migration 010 follows indexer migration
-006. This upgrade has not yet been activated on the running Pi deployment.
+006. The Pi upgrade is activated using the fresh `traceforge_batch_20261006`
+database, with all six indexer migrations applied. See the parent's
+[Phase 6 activation](https://github.com/aididalam/traceforge/blob/main/docs/batch-activation-phase6.md).
 
 `npm run read-model:status` includes quantity and route tables. `npm run history`
 prints registration, receipt and removal amounts and explanations. Monitoring

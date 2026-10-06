@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "chainId": 9009,
-  "contractAddress": "0x07bf849fb7e97fa174791bdf3bf9bffa621e145b",
+  "contractAddress": "0xf286a8f7bbbe4e5f2337e1701524368794de5672",
   "semantics": [
     {
       "kind": "entity_type",
@@ -25,25 +25,25 @@
       "kind": "event_type",
       "value": "PRODUCT_CLOSED_SOLD",
       "hash": "0x0212c75676706d7f4cc48273211cfdc7cf30791bcde8c05be163a0ee8ec609ac",
-      "label": "Sold · tracking closed"
+      "label": "Out of supply chain"
     },
     {
       "kind": "event_type",
       "value": "PRODUCT_CLOSED_LOST",
       "hash": "0xfbacdd35826a657c17725b3fb2b6300511cdd9baf119b96732b200916cb84448",
-      "label": "Lost · tracking closed"
+      "label": "Out of supply chain"
     },
     {
       "kind": "event_type",
       "value": "PRODUCT_CLOSED_DAMAGED",
       "hash": "0x1ef49a7d9193fa15fef6961f048d7d29696fdafbe6ac3c46646bd22a7e8b9a88",
-      "label": "Damaged · tracking closed"
+      "label": "Out of supply chain"
     },
     {
       "kind": "event_type",
       "value": "PRODUCT_CLOSED_DISPOSED",
       "hash": "0xba810c22f530c395ef58b8981c81c91e1c7122abee4d6ac87b3acc78e2a18a10",
-      "label": "Disposed · tracking closed"
+      "label": "Out of supply chain"
     }
   ]
 }
