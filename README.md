@@ -103,4 +103,11 @@ Semantic imports verify every configured value by recomputing
 
 `CustodyClaimed` appends an immutable `custody_claims` row and updates the product holder/version in event order. There is no pending transfer projection. Closed products remain in the read model. Independent business registration emits the existing identity/workspace events.
 
+The checked-in ABI also includes `ProductRegistered`, `BatchReceived` and
+`QuantityRemoved` from the 2026-10-06 quantity contract implementation. Their typed
+projections/migrations are the next phase of the
+[batch upgrade](https://github.com/aididalam/traceforge/blob/main/docs/batch-quantity-plan.md).
+The running deployment continues emitting the existing events; deploy the
+quantity contract only after matching projections and API workflows are ready.
+
 For isolated tests or an explicit deployment configuration, `TRACEFORGE_CHAIN_ID`, `TRACEFORGE_CONTRACT_ADDRESS` and `TRACEFORGE_DEPLOYMENT_BLOCK` override the checked-in network defaults. Run `npm run public:sync` in the API after projecting to refresh explicitly opted-in public names/details.
