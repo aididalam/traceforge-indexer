@@ -350,6 +350,16 @@ try {
         );
         break;
 
+      case "ProductRegistered":
+      case "BatchReceived":
+      case "QuantityRemoved":
+        console.log("  Quantity operation", {
+          quantity:args.quantity??args.initialQuantity,route:args.routeId??args.sourceRouteId,
+          receivedRoute:args.receivedRouteId,from:args.fromOrganizationId,to:args.toOrganizationId,
+          organization:args.organizationId,reason:args.reason,reasonText:args.reasonText,
+          available:args.availableQuantity,removed:args.removedQuantity,timestamp:args.timestamp });
+        break;
+
       case "CustodyClaimed":
         console.log("  Physical receipt", { from: args.fromOrganizationId, to: args.toOrganizationId,
           actor: args.actor, evidence: args.evidenceHash, version: args.custodyVersion, timestamp: args.timestamp });

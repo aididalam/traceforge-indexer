@@ -20,6 +20,9 @@ try {
     "entities",
     "trace_events",
     "custody_claims",
+    "product_quantities",
+    "batch_routes",
+    "quantity_movements",
     "entity_links",
     "entity_link_events",
   ];
@@ -66,6 +69,10 @@ try {
   console.log("Physical receipts");
   console.table(custody);
 
+  const [quantities] = await db.query(`SELECT tenant_id,entity_id,initial_quantity,available_quantity,removed_quantity FROM product_quantities ORDER BY created_event_id`);
+  console.log("Product quantities");console.table(quantities);
+  const [routes] = await db.query(`SELECT entity_id,route_id,parent_route_id,organization_id,available_quantity,forwarded_quantity,removed_quantity,version FROM batch_routes ORDER BY created_event_id`);
+  console.log("Batch routes");console.table(routes);
   const [links] = await db.query(
     `SELECT
        link_id,

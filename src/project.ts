@@ -2,7 +2,7 @@ import type { RowDataPacket } from "mysql2";
 import { config } from "./config.js";
 import { createDb } from "./db.js";
 
-const PROJECTOR = "read-model-v1";
+const PROJECTOR = `read-model-v2:${config.chainId}:${config.contractAddress.toLowerCase()}`;
 const rebuild = process.argv.includes("--rebuild");
 
 interface EventRow extends RowDataPacket {
@@ -53,6 +53,7 @@ function uint(a: Args, key: string): string {
   if (typeof v !== "number" && typeof v !== "string") {
     throw new Error(`Expected uint arg ${key}`);
   }
+  if (!/^(0|[1-9][0-9]*)$/.test(String(v)) || (typeof v === "number" && !Number.isSafeInteger(v))) throw new Error(`Invalid uint arg ${key}`);
   return String(v);
 }
 
@@ -232,6 +233,74 @@ async function apply(row: EventRow) {
       );
       return;
 
+    case "ProductRegistered": {
+      const scope=[config.chainId,config.contractAddress.toLowerCase(),str(a,"tenantId"),str(a,"entityId")];
+      const quantity=uint(a,"initialQuantity"), timestamp=uint(a,"timestamp");
+      await q(`INSERT INTO product_quantities
+        (chain_id,contract_address,tenant_id,entity_id,registration_metadata_hash,origin_organization_id,
+         root_route_id,initial_quantity,available_quantity,registered_at,created_event_id,updated_event_id)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,[...scope,str(a,"registrationMetadataHash"),str(a,"organizationId"),
+          str(a,"rootRouteId"),quantity,quantity,timestamp,id,id]);
+      if(BigInt(quantity)>1n){
+        await q(`INSERT INTO batch_routes
+          (chain_id,contract_address,tenant_id,entity_id,route_id,parent_route_id,organization_id,
+           received_quantity,available_quantity,received_at,created_event_id,updated_event_id)
+          VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,[...scope,str(a,"rootRouteId"),"0x"+"0".repeat(64),str(a,"organizationId"),quantity,quantity,timestamp,id,id]);
+        await mustUpdate("UPDATE entities SET current_custodian=?,updated_event_id=? WHERE tenant_id=? AND entity_id=?",
+          ["0x"+"0".repeat(64),id,str(a,"tenantId"),str(a,"entityId")],"Batch registration");
+      }
+      return;
+    }
+
+    case "BatchReceived": {
+      const scope=[config.chainId,config.contractAddress.toLowerCase(),str(a,"tenantId"),str(a,"entityId")];
+      const quantity=uint(a,"quantity"),version=uint(a,"sourceVersion"),timestamp=uint(a,"timestamp");
+      await mustUpdate(`UPDATE batch_routes SET available_quantity=?,forwarded_quantity=?,version=?,updated_event_id=?
+        WHERE chain_id=? AND contract_address=? AND tenant_id=? AND entity_id=? AND route_id=?
+          AND organization_id=? AND version=? AND available_quantity=? AND forwarded_quantity=?`,
+        [uint(a,"sourceAvailableQuantity"),uint(a,"sourceForwardedQuantity"),version,id,...scope,str(a,"sourceRouteId"),
+          str(a,"fromOrganizationId"),(BigInt(version)-1n).toString(),(BigInt(uint(a,"sourceAvailableQuantity"))+BigInt(quantity)).toString(),
+          (BigInt(uint(a,"sourceForwardedQuantity"))-BigInt(quantity)).toString()],"Batch receipt source");
+      await q(`INSERT INTO batch_routes
+        (chain_id,contract_address,tenant_id,entity_id,route_id,parent_route_id,organization_id,
+         received_quantity,available_quantity,received_at,created_event_id,updated_event_id)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,[...scope,str(a,"receivedRouteId"),str(a,"sourceRouteId"),str(a,"toOrganizationId"),quantity,quantity,timestamp,id,id]);
+      await q(`INSERT INTO quantity_movements
+        (chain_event_id,chain_id,contract_address,tenant_id,entity_id,action,source_route_id,received_route_id,
+         from_organization_id,to_organization_id,quantity,actor,evidence_hash,version,occurred_at,transaction_hash)
+        VALUES(?,?,?,?,?,'RECEIVED',?,?,?,?,?,?,?,?,?,?)`,[id,...scope,str(a,"sourceRouteId"),str(a,"receivedRouteId"),
+          str(a,"fromOrganizationId"),str(a,"toOrganizationId"),quantity,str(a,"actor"),str(a,"evidenceHash"),version,timestamp,row.transaction_hash]);
+      await mustUpdate("UPDATE entities SET updated_event_id=? WHERE tenant_id=? AND entity_id=?",[id,str(a,"tenantId"),str(a,"entityId")],"Batch receipt entity");
+      return;
+    }
+
+    case "QuantityRemoved": {
+      const scope=[config.chainId,config.contractAddress.toLowerCase(),str(a,"tenantId"),str(a,"entityId")];
+      const quantity=uint(a,"quantity"),version=uint(a,"version"),timestamp=uint(a,"timestamp");
+      await mustUpdate(`UPDATE product_quantities SET available_quantity=?,removed_quantity=?,updated_event_id=?
+        WHERE chain_id=? AND contract_address=? AND tenant_id=? AND entity_id=? AND available_quantity=? AND removed_quantity=?`,
+        [uint(a,"availableQuantity"),uint(a,"removedQuantity"),id,...scope,
+          (BigInt(uint(a,"availableQuantity"))+BigInt(quantity)).toString(),(BigInt(uint(a,"removedQuantity"))-BigInt(quantity)).toString()],"Quantity removal product");
+      const single=str(a,"routeId")==="0x"+"0".repeat(64);
+      if(!single)await mustUpdate(`UPDATE batch_routes SET available_quantity=?,removed_quantity=?,version=?,updated_event_id=?
+        WHERE chain_id=? AND contract_address=? AND tenant_id=? AND entity_id=? AND route_id=? AND organization_id=?
+          AND version=? AND available_quantity=? AND removed_quantity=?`,
+        [uint(a,"routeAvailableQuantity"),uint(a,"routeRemovedQuantity"),version,id,...scope,str(a,"routeId"),str(a,"organizationId"),
+          (BigInt(version)-1n).toString(),(BigInt(uint(a,"routeAvailableQuantity"))+BigInt(quantity)).toString(),
+          (BigInt(uint(a,"routeRemovedQuantity"))-BigInt(quantity)).toString()],"Quantity removal route");
+      const closed=BigInt(uint(a,"availableQuantity"))===0n;
+      await mustUpdate(`UPDATE entities SET closed=?,closed_at=?,updated_event_id=? ${single?",custody_version=?":""}
+        WHERE tenant_id=? AND entity_id=? AND closed=FALSE ${single?"AND current_custodian=? AND custody_version=?":""}`,
+        [closed,closed?timestamp:null,id,...(single?[version]:[]),str(a,"tenantId"),str(a,"entityId"),
+          ...(single?[str(a,"organizationId"),(BigInt(version)-1n).toString()]:[])],"Quantity removal entity");
+      await q(`INSERT INTO quantity_movements
+        (chain_event_id,chain_id,contract_address,tenant_id,entity_id,action,source_route_id,from_organization_id,
+         quantity,reason,reason_text,actor,evidence_hash,version,occurred_at,transaction_hash)
+        VALUES(?,?,?,?,?,'REMOVED',?,?,?,?,?,?,?,?,?,?)`,[id,...scope,str(a,"routeId"),str(a,"organizationId"),quantity,
+          num(a,"reason"),str(a,"reasonText"),str(a,"actor"),str(a,"evidenceHash"),version,timestamp,row.transaction_hash]);
+      return;
+    }
+
     case "CustodyClaimed":
       await q(`INSERT INTO custody_claims
         (chain_event_id,tenant_id,entity_id,from_organization_id,to_organization_id,
@@ -308,6 +377,9 @@ async function apply(row: EventRow) {
 }
 
 const derivedTables = [
+  "quantity_movements",
+  "batch_routes",
+  "product_quantities",
   "entity_link_events",
   "entity_links",
   "custody_claims",
@@ -326,12 +398,21 @@ const derivedTables = [
 try {
   await db.beginTransaction();
 
+  // Legacy typed tables share one deployment per database. Refuse a mixed replay.
+  const [foreignRows] = await q(`SELECT id FROM chain_events WHERE chain_id<>? OR contract_address<>? LIMIT 1`,
+    [config.chainId,config.contractAddress.toLowerCase()]);
+  if ((foreignRows as unknown[]).length) throw new Error("Use a separate read-model database for each contract deployment.");
+
   if (rebuild) {
     for (const table of derivedTables) await q(`DELETE FROM ${table}`);
     await q(`DELETE FROM projection_checkpoints WHERE projector_name = ?`, [PROJECTOR]);
   }
 
   let lastEventId = 0n;
+  const [oldRows] = await q(`SELECT last_event_id FROM projection_checkpoints WHERE projector_name='read-model-v1'`);
+  const [newRows] = await q(`SELECT last_event_id FROM projection_checkpoints WHERE projector_name=?`,[PROJECTOR]);
+  if (!rebuild && (oldRows as unknown[]).length && !(newRows as unknown[]).length)
+    throw new Error("Projector upgrade requires project --rebuild before incremental replay.");
 
   if (!rebuild) {
     const [rows] = await q(

@@ -24,6 +24,8 @@ export function createDb() {
     multipleStatements:
       true,
 
+    supportBigNumbers: true,
+    bigNumberStrings: true,
     charset:
       "utf8mb4",
   });

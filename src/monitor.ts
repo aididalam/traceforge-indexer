@@ -186,7 +186,7 @@ try {
         WHERE projector_name = ?
       `,
       [
-        "read-model-v1",
+        `read-model-v2:${config.chainId}:${config.contractAddress.toLowerCase()}`,
       ],
     );
 

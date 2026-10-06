@@ -111,3 +111,34 @@ The running deployment continues emitting the existing events; deploy the
 quantity contract only after matching projections and API workflows are ready.
 
 For isolated tests or an explicit deployment configuration, `TRACEFORGE_CHAIN_ID`, `TRACEFORGE_CONTRACT_ADDRESS` and `TRACEFORGE_DEPLOYMENT_BLOCK` override the checked-in network defaults. Run `npm run public:sync` in the API after projecting to refresh explicitly opted-in public names/details.
+
+## Quantity upgrade (Phase 3)
+
+Migration `006_product_quantities.sql` adds deployment-scoped `product_quantities`,
+`batch_routes` and `quantity_movements`. `ProductRegistered` creates the fixed
+initial count and batch root. `BatchReceived` debits its source and creates a
+child path. `QuantityRemoved` adjusts route/global balances and records the
+reason text, evidence reference, actor and time. A batch's custodian is represented
+by its available routes rather than one business ID.
+
+Database checks enforce `initial = available + removed` and
+`received = available + forwarded + removed`. Ordered projection also checks
+source ownership, previous balance and version. Replay failures roll back both
+derived rows and checkpoint updates; `project --rebuild` reconstructs balances
+and parent routes from raw canonical logs.
+
+Quantity tables and the `read-model-v2:<chainId>:<contractAddress>` checkpoint
+include deployment identity. Legacy typed tables still use one deployment per
+database, so the projector refuses mixed-deployment raw logs. Use a separate
+read-model database for each deployment. An existing `read-model-v1` database
+requires `npm run project:rebuild` after migration; incremental replay refuses
+to silently reuse the old checkpoint. API migration 010 follows indexer migration
+006. This upgrade has not yet been activated on the running Pi deployment.
+
+`npm run read-model:status` includes quantity and route tables. `npm run history`
+prints registration, receipt and removal amounts and explanations. Monitoring
+uses the scoped v2 checkpoint. Big unsigned values are read as strings.
+
+The parent/API disposable integration test verifies real batch transactions,
+repeated projection, a full rebuild and atomic rejection of a corrupted removal
+log. It performs no writes to Pi or the running database.
