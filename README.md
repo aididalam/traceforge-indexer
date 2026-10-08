@@ -144,3 +144,11 @@ uses the scoped v2 checkpoint. Big unsigned values are read as strings.
 The parent/API disposable integration test verifies real batch transactions,
 repeated projection, a full rebuild and atomic rejection of a corrupted removal
 log. It performs no writes to Pi or the running database.
+
+## Docker deployment
+
+The parent repository provides Docker Compose configuration, private persistent
+storage, runtime domain settings and backup/recovery commands. See the
+[Docker deployment guide](https://github.com/aididalam/traceforge/blob/main/docs/docker-deployment.md).
+The Dockerfile packages compiled runtime code and required assets. Configuration
+and credentials are supplied at runtime; wallet keys remain in private storage.

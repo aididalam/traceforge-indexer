@@ -1,4 +1,5 @@
 import "dotenv/config";
+import {secret} from './secrets.js';
 
 import {
   readFileSync,
@@ -77,9 +78,7 @@ export const config = {
       ),
 
     password:
-      required(
-        "MYSQL_PASSWORD",
-      ),
+      secret('MYSQL_PASSWORD') ?? required('MYSQL_PASSWORD'),
   },
 
   chunkSize:

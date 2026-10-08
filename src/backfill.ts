@@ -19,6 +19,7 @@ import {
 import {
   config,
 } from "./config.js";
+import {chainTransport} from './chain-transport.js';
 
 import {
   createDb,
@@ -64,10 +65,7 @@ function jsonValue(
 
 const client =
   createPublicClient({
-    transport:
-      http(
-        config.rpcUrl,
-      ),
+    transport: chainTransport(),
   });
 
 const actualChainId =

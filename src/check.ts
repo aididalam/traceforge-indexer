@@ -8,6 +8,7 @@ import mysql from "mysql2/promise";
 import {
   config,
 } from "./config.js";
+import {chainTransport} from './chain-transport.js';
 
 console.log(
   "TraceForge Indexer Environment Check",
@@ -72,10 +73,7 @@ try {
 
 const publicClient =
   createPublicClient({
-    transport:
-      http(
-        config.rpcUrl,
-      ),
+    transport: chainTransport(),
   });
 
 const chainId =

@@ -10,6 +10,8 @@ import {
 import {
   createDb,
 } from "./db.js";
+import {config} from './config.js';
+import {createHash} from 'node:crypto';
 
 interface MigrationRow
   extends RowDataPacket {
@@ -18,8 +20,11 @@ interface MigrationRow
 
 const db =
   await createDb();
+const migrationLockName='tf-migrate:'+createHash('sha256').update(config.mysql.database).digest('hex').slice(0,48);
 
 try {
+  const [lockRows] = await db.query<RowDataPacket[]>('SELECT GET_LOCK(?,120) acquired', [migrationLockName]);
+  if (Number(lockRows[0].acquired) !== 1) throw Error('Database migration is already in progress');
   await db.query(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
       filename VARCHAR(255) NOT NULL,
@@ -122,5 +127,6 @@ try {
     "Migrations complete.",
   );
 } finally {
+  await db.query('SELECT RELEASE_LOCK(?)', [migrationLockName]);
   await db.end();
 }

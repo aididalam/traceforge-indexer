@@ -10,6 +10,7 @@ import {
 import {
   config,
 } from "./config.js";
+import {chainTransport} from './chain-transport.js';
 
 import {
   createDb,
@@ -71,10 +72,7 @@ const maxEventLag =
 
 const client =
   createPublicClient({
-    transport:
-      http(
-        config.rpcUrl,
-      ),
+    transport: chainTransport(),
   });
 
 const actualChainId =
