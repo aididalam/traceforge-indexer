@@ -1,3 +1,4 @@
+import {indexingHead,verifyCheckpoint} from './finality.js';
 import type {
   RowDataPacket,
 } from "mysql2";
@@ -18,6 +19,7 @@ import {
 
 interface IndexerCheckpointRow
   extends RowDataPacket {
+  last_processed_hash:string|null;
   last_processed_block:
     string | number;
 }
@@ -90,15 +92,7 @@ if (
   );
 }
 
-const head =
-  await client.getBlockNumber();
-
-const safeHead =
-  head >
-  config.confirmations
-    ? head -
-      config.confirmations
-    : 0n;
+const {head,safeHead}=await indexingHead(client,config.confirmations);
 
 const db =
   await createDb();
@@ -110,7 +104,7 @@ try {
     >(
       `
         SELECT
-          last_processed_block
+          last_processed_block,last_processed_hash
         FROM indexer_checkpoints
         WHERE chain_id = ?
           AND contract_address = ?
@@ -131,6 +125,7 @@ try {
     );
   }
 
+  await verifyCheckpoint(client,checkpointRows[0]);
   const indexedBlock =
     BigInt(
       checkpointRows[0]

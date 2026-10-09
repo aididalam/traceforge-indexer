@@ -1,3 +1,4 @@
+import {indexingHead,verifyCheckpoint} from './finality.js';
 import type {
   Abi,
 } from "viem";
@@ -29,6 +30,7 @@ interface CheckpointRow
   extends RowDataPacket {
   last_processed_block:
     string | number;
+  last_processed_hash: string|null;
 }
 
 const abi =
@@ -95,15 +97,7 @@ if (
   );
 }
 
-const head =
-  await client.getBlockNumber();
-
-const safeHead =
-  head >
-  config.confirmations
-    ? head -
-      config.confirmations
-    : 0n;
+const {head,safeHead}=await indexingHead(client,config.confirmations);
 
 const db =
   await createDb();
@@ -114,7 +108,7 @@ try {
       CheckpointRow[]
     >(
       `
-        SELECT last_processed_block
+        SELECT last_processed_block,last_processed_hash
         FROM indexer_checkpoints
         WHERE chain_id = ?
           AND contract_address = ?
@@ -125,6 +119,7 @@ try {
       ],
     );
 
+  await verifyCheckpoint(client,checkpointRows[0]);
   let fromBlock =
     config.deploymentBlock;
 
@@ -212,6 +207,7 @@ try {
         toBlock,
       });
 
+    const checkpointHash=process.env.TRACEFORGE_NETWORK_KIND==='public'?(await client.getBlock({blockNumber:toBlock})).hash:null;
     await db.beginTransaction();
 
     try {
@@ -306,13 +302,13 @@ try {
           INSERT INTO indexer_checkpoints (
             chain_id,
             contract_address,
-            last_processed_block
+            last_processed_block,last_processed_hash
           )
-          VALUES (?, ?, ?)
+          VALUES (?, ?, ?, ?)
 
           ON DUPLICATE KEY UPDATE
             last_processed_block =
-              ?
+              ?,last_processed_hash=?
         `,
         [
           config.chainId,
@@ -320,9 +316,9 @@ try {
           config.contractAddress
             .toLowerCase(),
 
-          toBlock.toString(),
+          toBlock.toString(),checkpointHash,
 
-          toBlock.toString(),
+          toBlock.toString(),checkpointHash,
         ],
       );
 

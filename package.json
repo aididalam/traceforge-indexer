@@ -26,11 +26,12 @@
     "sync:prod": "npm run check:prod && npm run backfill:prod && npm run project:prod",
     "verify:deployment-readiness": "npm run typecheck && npm run verify:production-build && npm run check:prod && npm run backfill:prod && npm run project:prod && npm run monitor:prod",
     "monitor": "tsx src/monitor.ts",
-    "monitor:prod": "node dist/monitor.js"
+    "monitor:prod": "node dist/monitor.js",
+    "test:finality": "npm run build && node --test scripts/test-finality.mjs"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "dotenv": "^18.0.5",
     "mysql2": "^3.24.5",
