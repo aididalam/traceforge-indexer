@@ -1,0 +1,20 @@
+CREATE TABLE receipt_approvals (
+ chain_event_id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+ chain_id BIGINT UNSIGNED NOT NULL,
+ contract_address VARCHAR(42) NOT NULL,
+ request_id VARCHAR(66) NOT NULL,
+ tenant_id VARCHAR(66) NOT NULL,
+ entity_id VARCHAR(66) NOT NULL,
+ from_organization_id VARCHAR(66) NOT NULL,
+ to_organization_id VARCHAR(66) NOT NULL,
+ requester_wallet VARCHAR(42) NOT NULL,
+ approver_wallet VARCHAR(42) NOT NULL,
+ source_route_id VARCHAR(66) NOT NULL,
+ received_route_id VARCHAR(66) NOT NULL,
+ quantity BIGINT UNSIGNED NOT NULL,
+ evidence_hash VARCHAR(66) NOT NULL,
+ occurred_at BIGINT UNSIGNED NOT NULL,
+ transaction_hash VARCHAR(66) NOT NULL,
+ UNIQUE KEY receipt_approval_identity(chain_id,contract_address,request_id),
+ KEY receipt_approval_product(chain_id,contract_address,tenant_id,entity_id,chain_event_id)
+);

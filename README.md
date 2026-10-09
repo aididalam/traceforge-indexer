@@ -4,6 +4,8 @@ Part of [TraceForge](https://github.com/aididalam/traceforge). See the parent re
 
 Reads TraceForge contract events and builds searchable MySQL projections.
 Maintains product history, current holders, batch routes and quantity balances.
+Projects `ReceiptApproved` into `receipt_approvals`, including requester/owner
+wallets; ownership is still derived from the confirmed movement logs.
 The API uses these projections alongside live blockchain checks.
 
 ## License

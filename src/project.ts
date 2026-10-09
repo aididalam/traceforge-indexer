@@ -32,6 +32,12 @@ function str(a: Args, key: string): string {
   return v;
 }
 
+function walletAddress(a: Args, key: string): string {
+  const value = str(a, key);
+  if (!/^0x[0-9a-fA-F]{40}$/.test(value)) throw new Error(`Invalid wallet arg ${key}`);
+  return value.toLowerCase();
+}
+
 function bool(a: Args, key: string): boolean {
   const v = a[key];
   if (typeof v !== "boolean") throw new Error(`Expected boolean arg ${key}`);
@@ -301,6 +307,14 @@ async function apply(row: EventRow) {
       return;
     }
 
+    case "ReceiptApproved":
+      await q(`INSERT INTO receipt_approvals(chain_event_id,chain_id,contract_address,request_id,tenant_id,entity_id,
+        from_organization_id,to_organization_id,requester_wallet,approver_wallet,source_route_id,received_route_id,quantity,evidence_hash,occurred_at,transaction_hash)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,[id,config.chainId,config.contractAddress.toLowerCase(),str(a,'requestId'),str(a,'tenantId'),str(a,'entityId'),
+          str(a,'fromOrganizationId'),str(a,'toOrganizationId'),walletAddress(a,'requesterWallet'),walletAddress(a,'approverWallet'),str(a,'sourceRouteId'),str(a,'receivedRouteId'),
+          uint(a,'quantity'),str(a,'evidenceHash'),uint(a,'timestamp'),row.transaction_hash]);
+      return;
+
     case "CustodyClaimed":
       await q(`INSERT INTO custody_claims
         (chain_event_id,tenant_id,entity_id,from_organization_id,to_organization_id,
@@ -377,6 +391,7 @@ async function apply(row: EventRow) {
 }
 
 const derivedTables = [
+  "receipt_approvals",
   "quantity_movements",
   "batch_routes",
   "product_quantities",
